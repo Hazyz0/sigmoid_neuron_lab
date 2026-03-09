@@ -301,7 +301,8 @@ def pickPath():
     print("3. Dataset 3")
     print("4. Dataset 4")
     print("5. Dataset 5")
-    print("6. Exit")
+    print("6. Dataset 6")
+    print("7. Exit")
     choice = input("Enter the number of the dataset you want to use: ").strip()
     if choice == "1":
         return "dataset1.csv"
@@ -314,15 +315,17 @@ def pickPath():
     elif choice == "5":
         return "dataset5.csv"
     elif choice == "6":
-        print("Goodbye!")
-        return "6"
+        return "dataset6.csv"
+    elif choice == 7"
+        print("Bye!")
+        return "7"
     else:
-        print("Invalid choice. Please enter 1, 2, 3, 4, 5, or 6.")
+        print("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7")
         return pickPath()
 
 def main():
     path = pickPath()
-    if(path != "6"):
+    if(path != "7"):
         learning_rate = 0.01  # Update with your desired learning rate
         epochs = 1000 # Update with your desired number of epochs
 
