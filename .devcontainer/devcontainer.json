@@ -1,18 +1,14 @@
 {
     "name": "Sigmoid Neuron Explorer",
     "image": "mcr.microsoft.com/devcontainers/python:3.11",
-    "postCreateCommand": "pip install ipywidgets ipykernel && python -m ipykernel install --user --name python3 --display-name 'Python 3 (ipykernel)'",
+    "postCreateCommand": "pip install numpy matplotlib",
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-python.python",
-                "ms-toolsai.jupyter",
-                "ms-toolsai.jupyter-renderers"
+                "ms-python.python"
             ],
             "settings": {
-                "python.defaultInterpreterPath": "/usr/local/bin/python",
-                "jupyter.defaultKernel": "python3",
-                "jupyter.askForKernelRestart": false
+                "python.defaultInterpreterPath": "/usr/local/bin/python"
             }
         }
     }
