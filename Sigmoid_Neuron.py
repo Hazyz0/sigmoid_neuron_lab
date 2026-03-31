@@ -53,6 +53,22 @@ def train_test_split(features, labels, test_ratio, seed_value):
     features_test = get_data_list(features, test_index)
     labels_test = get_data_list(labels, test_index)
     return features_train, labels_train, features_test, labels_test
+# This is a new function that I added to create 3 sets AI was minamaly used
+
+def train_validation_test_split(features, labels, test_ratio, val_ratio, seed_value):
+    X_train, y_train, X_test, y_test = train_test_split(features, labels, test_ratio=test_ratio, seed_value=seed_value)
+
+    n = len(X_train)
+    idx = list(range(n))
+    rng = random.Random(seed_value)
+    rng.shuffle(idx)
+    cut = int(n * (1 - val_ratio))
+    tr_idx = idx[:cut]
+    va_idx = idx[cut:]
+    X_tr = get_data_list(X_train, tr_idx); y_tr = get_data_list(y_train, tr_idx)
+    X_val = get_data_list(X_train, va_idx); y_val = get_data_list(y_train, va_idx)
+    return X_tr, y_tr, X_val, y_val, X_test, y_test
+
 
 def activation_function(z):
     prediction = 1/(1 + np.exp(-z))
@@ -79,7 +95,7 @@ def sigmoid(path, learning_rate, epochs, label):
     x, y, feature_names, label_name = load_csv(path)
     folder_name = os.path.splitext(os.path.basename(path))[0]
     os.makedirs(folder_name, exist_ok=True)
-    x_train, y_train, x_test, y_test = train_test_split(x, y, test_ratio=0.3, seed_value=75)
+    x_train, y_train, x_validation, y_validation, x_test, y_test = train_validation_test_split(x, y, 0.1, 0.2, 42)
 
     #Beginning values for weights and bias
     num_features = len(x_train[0])
@@ -88,6 +104,16 @@ def sigmoid(path, learning_rate, epochs, label):
     weight_history = []
     loss_history = []
     max_weight_change_history = []  
+    
+    patience = 10
+    min_delta = 1e-4
+    best_loss = float("inf")
+    epochs_without_improvement = 0
+    best_weights = None
+    best_bias = None
+    best_epoch = 0
+
+
 
     for epoch in range(epochs):
         weightChangeList = []
@@ -123,6 +149,23 @@ def sigmoid(path, learning_rate, epochs, label):
         # Compute epoch-level summaries for plotting
         epoch_bce = sum(lossList) / len(lossList)
         loss_history.append(epoch_bce)
+        
+        if epoch_bce < 0.1:
+            best_loss = epoch_bce
+            best_weights = weights.copy()
+            best_bias = bias
+            best_epoch = epoch
+            epochs_without_improvement += 1
+        else:
+            epochs_without_improvement = 0
+
+        if epochs_without_improvement >= patience:
+            print(f"Early stopping at epoch {epoch}")
+            print(f"Best loss at epoch {best_epoch}")
+            weights = best_weights
+            bias = best_bias
+            break
+
         all_changes = []
         for change_row in weightChangeList:
             for change_value in change_row:
@@ -316,7 +359,7 @@ def pickPath():
         return "dataset5.csv"
     elif choice == "6":
         return "dataset6.csv"
-    elif choice == 7"
+    elif choice == "7":
         print("Bye!")
         return "7"
     else:
@@ -327,7 +370,7 @@ def main():
     path = pickPath()
     if(path != "7"):
         learning_rate = 0.01  # Update with your desired learning rate
-        epochs = 1000 # Update with your desired number of epochs
+        epochs = 10000 # Update with your desired number of epochs
 
         sigmoid(path, learning_rate, epochs, label="label")
     
